@@ -1,0 +1,14 @@
+.git
+.idea
+.gitignore
+.dockerignore
+.docker
+docker-compose.yml
+install.sh
+.ops/helm/service/values.yaml
+.ops/helm/service/files/grafana.json
+.deploy/registry_credentials_values.yaml
+.deploy/elasticsearch_credentials_values.yaml
+.deploy/ingress_values.yaml
+# Werf files
+werf_report.json

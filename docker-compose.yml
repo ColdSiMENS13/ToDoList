@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: quickstart_app
+    build: .docker/app
+    environment:
+      XDEBUG_CONFIG: "mode=off"
+      XDEBUG_MODE: "debug,develop"
+      PHP_IDE_CONFIG: "serverName=quickstart"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
+    volumes:
+      - ./:/var/www
+      - ./.docker/app/.bashrc:/home/www-data/.bashrc
+  nginx:
+    container_name: quickstart_nginx
+    build: ./.docker/nginx
+    volumes:
+      - ./:/var/www
+    ports:
+      - "80:80"
+    links:
+      - app
+  mysql:
+    image: mysql:latest
+    container_name: quickstart_mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: example
+      MYSQL_USER: example
+      MYSQL_PASSWORD: example
+    volumes:
+      - quickstart_mysql:/var/lib/mysql
+    links:
+      - app
+
+  redis:
+    image: redis:latest
+    container_name: quickstart_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - quickstart_redis:/data
+    links:
+      - app
+
+volumes:
+  quickstart_mysql:
+  quickstart_redis:
