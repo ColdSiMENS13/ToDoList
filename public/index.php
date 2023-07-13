@@ -3,7 +3,8 @@
 include("database.php");
 include("todo.php");
 
-$list = new ToDoList();
+$database = new DataBase('localhost', 'root', '', 'todoList');
+$list = new ToDoList($database);
 ?>
 
 <!DOCTYPE html>
@@ -20,87 +21,87 @@ $list = new ToDoList();
 
 <body>
 
-<div class="container my-5">
+    <div class="container my-5">
 
-    <h2>To Do List</h2>
+        <h2>To Do List</h2>
 
-    <div class="row">
-        <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-6">
 
-            <?php
-            $editTask = $list->editTaskById();
-            $createTask = $list->createTask();
+                <?php
+                $editTask = $list->editTaskById();
+                $createTask = $list->createTask();
 
-            if (isset($_GET['edit-task'])) {
+                if (isset($_GET['edit-task'])) {
 
-                $createTask = $list->updateTaskById();
+                    $createTask = $list->updateTaskById();
 
-            }
-
-            if (isset($_GET['delete-task'])) {
-
-                $createTask = $list->deleteTaskById();
-
-            }
-
-            ?>
-
-            <form method="post">
-                <p class="text-danger">
-                    <?php
-                    echo $createTask['success'] ?? '';
-                    echo $createTask['taskMsg'] ?? '';
-                    ?>
-                </p>
-
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Enter Something..." name="task"
-                           value="<?php echo $editTask['task'] ?? ''; ?>">
-                    <button type="submit" class="btn btn-primary"
-                            name="<?php echo count($editTask) ? 'update' : 'add'; ?>"><?php echo count($editTask) ? 'update' : 'add'; ?></button>
-                </div>
-
-            </form>
-
-            <?php
-
-            $getList = $list->getTask();
-
-            if (count($getList['data'])) {
-                foreach ($getList['data'] as $task) {
-                    ?>
-
-                    <div class="row my-3">
-                        <div class="col-sm-10">
-                            <?php
-                            echo '(' . $task['id'] . ') ' . $task['task'];
-                            ?>
-                        </div>
-                        <div class="col-sm-1">
-                            <a href="index.php?edit-task=<?php echo $task['id']; ?>"
-                               class="text-success text-decoration-none">
-                                edit
-                            </a>
-                        </div>
-                        <div class="col-sm-1">
-                            <a href="index.php?delete-task=<?php echo $task['id']; ?>"
-                               class="text-danger text-decoration-none">
-                                delete
-                            </a>
-                        </div>
-                    </div>
-                    <hr>
-                    <?php
                 }
-            }
-            ?>
 
+                if (isset($_GET['delete-task'])) {
+
+                    $createTask = $list->deleteTaskById();
+
+                }
+
+                ?>
+
+                <form method="post">
+                    <p class="text-danger">
+                        <?php
+                        echo $createTask['success'] ?? '';
+                        echo $createTask['taskMsg'] ?? '';
+                        ?>
+                    </p>
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Enter Something..." name="task"
+                            value="<?php echo $editTask['task'] ?? ''; ?>">
+                        <button type="submit" class="btn btn-primary"
+                            name="<?php echo count($editTask) ? 'update' : 'add'; ?>"><?php echo count($editTask) ? 'update' : 'add'; ?></button>
+                    </div>
+
+                </form>
+
+                <?php
+
+                $getList = $list->getTask();
+
+                if (count($getList['data'])) {
+                    foreach ($getList['data'] as $task) {
+                        ?>
+
+                        <div class="row my-3">
+                            <div class="col-sm-10">
+                                <?php
+                                echo '(' . $task['id'] . ') ' . $task['task'];
+                                ?>
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="index.php?edit-task=<?php echo $task['id']; ?>"
+                                    class="text-success text-decoration-none">
+                                    edit
+                                </a>
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="index.php?delete-task=<?php echo $task['id']; ?>"
+                                    class="text-danger text-decoration-none">
+                                    delete
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
+                        <?php
+                    }
+                }
+                ?>
+
+            </div>
+            <div class="col-sm-6">
+            </div>
         </div>
-        <div class="col-sm-6">
-        </div>
+
     </div>
-
-</div>
 
 </body>
 

@@ -2,17 +2,18 @@
 
 class ToDoList
 {
-
+    private DataBase $dataBase;
+    public function __construct(DataBase $dataBase){
+        $this->dataBase = $dataBase; 
+    }
     public function getTask()
     {
-
-        global $conn;
         $data['data'] = [];
 
         $query = "SELECT id, task ";
         $query .= "FROM todo ORDER BY id DESC";
 
-        $result = $conn->query($query);
+        $result = $this->dataBase->exec($query);
 
         if ($result) {
 
@@ -30,9 +31,6 @@ class ToDoList
 
     public function createTask()
     {
-
-        global $conn;
-
         if (isset($_POST['add'])) {
 
             $task = $_POST['task'];
@@ -57,7 +55,7 @@ class ToDoList
                 $query .= "(task) ";
                 $query .= "VALUES ('$task')";
 
-                $result = $conn->query($query);
+                $result = $this->dataBase->exec($query);
 
                 if ($result) {
 
@@ -73,9 +71,6 @@ class ToDoList
 
     public function editTaskById()
     {
-
-        global $conn;
-
         $data = [];
 
         if (isset($_GET['edit-task']) && !empty($_GET['edit-task'])) {
@@ -86,7 +81,7 @@ class ToDoList
             $query .= "FROM todo ";
             $query .= "WHERE id=$id";
 
-            $result = $conn->query($query);
+            $result = $this->dataBase->exec($query);
             $data = $result->fetch_assoc();
 
         }
@@ -95,9 +90,6 @@ class ToDoList
 
     public function updateTaskById()
     {
-
-        global $conn;
-
         if (isset($_POST['update']) && isset($_GET['edit-task']) && !empty($_GET['edit-task'])) {
 
             $id = $_GET['edit-task'];
@@ -124,7 +116,7 @@ class ToDoList
                 $query .= "task ='$task' ";
                 $query .= "WHERE id=$id";
 
-                $result = $conn->query($query);
+                $result = $this->dataBase->exec($query);
 
                 if ($result) {
 
@@ -140,9 +132,6 @@ class ToDoList
 
     public function deleteTaskById()
     {
-
-        global $conn;
-
         if (isset($_GET['delete-task']) && !empty($_GET['delete-task'])) {
 
             $id = $_GET['delete-task'];
@@ -160,7 +149,7 @@ class ToDoList
                 $query = "DELETE FROM todo ";
                 $query .= "WHERE id =$id";
 
-                $result = $conn->query($query);
+                $result = $this->dataBase->exec($query);
 
                 if ($result) {
 
