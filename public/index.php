@@ -2,6 +2,7 @@
 
 include("database.php");
 include("todo.php");
+include("getidandname.php");
 
 $database = new DataBase('localhost', 'root', '', 'todoList');
 $list = new ToDoList($database);
@@ -69,22 +70,23 @@ $list = new ToDoList($database);
 
                 if (count($getList['data'])) {
                     foreach ($getList['data'] as $task) {
+                        $result = new ToDo($task['id'], $task['task']);
                         ?>
 
                         <div class="row my-3">
                             <div class="col-sm-10">
                                 <?php
-                                echo '(' . $task['id'] . ') ' . $task['task'];
+                                echo '(' .$result->getId(). ') ' . $result->getTask();
                                 ?>
                             </div>
                             <div class="col-sm-1">
-                                <a href="index.php?edit-task=<?php echo $task['id']; ?>"
+                                <a href="index.php?edit-task=<?php echo $result->getId(); ?>"
                                     class="text-success text-decoration-none">
                                     edit
                                 </a>
                             </div>
                             <div class="col-sm-1">
-                                <a href="index.php?delete-task=<?php echo $task['id']; ?>"
+                                <a href="index.php?delete-task=<?php echo $result->getId(); ?>"
                                     class="text-danger text-decoration-none">
                                     delete
                                 </a>
