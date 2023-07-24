@@ -1,8 +1,8 @@
 <?php
 
-include("database.php");
-include("todo.php");
-include("getidandname.php");
+include("../src/database.php");
+include("../src/todo.php");
+include("../src/todolist.php");
 
 $database = new DataBase('localhost', 'root', '', 'todoList');
 $list = new ToDoList($database);
@@ -68,25 +68,24 @@ $list = new ToDoList($database);
 
                 $getList = $list->getTask();
 
-                if (count($getList['data'])) {
-                    foreach ($getList['data'] as $task) {
-                        $result = new ToDo($task['id'], $task['task']);
+                if (count($getList)) {
+                    foreach ($getList as $task) {
                         ?>
 
                         <div class="row my-3">
                             <div class="col-sm-10">
                                 <?php
-                                echo '(' .$result->getId(). ') ' . $result->getTask();
+                                echo '(' .$task->getId(). ') ' . $task->getTask();
                                 ?>
                             </div>
                             <div class="col-sm-1">
-                                <a href="index.php?edit-task=<?php echo $result->getId(); ?>"
+                                <a href="index.php?edit-task=<?php echo $task->getId(); ?>"
                                     class="text-success text-decoration-none">
                                     edit
                                 </a>
                             </div>
                             <div class="col-sm-1">
-                                <a href="index.php?delete-task=<?php echo $result->getId(); ?>"
+                                <a href="index.php?delete-task=<?php echo $task->getId(); ?>"
                                     class="text-danger text-decoration-none">
                                     delete
                                 </a>

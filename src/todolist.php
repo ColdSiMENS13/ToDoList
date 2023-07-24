@@ -8,23 +8,27 @@ class ToDoList
     }
     public function getTask()
     {
-        $data['data'] = [];
+        $data = [];
 
         $query = "SELECT id, task ";
         $query .= "FROM todo ORDER BY id DESC";
 
         $result = $this->dataBase->exec($query);
 
-        if ($result) {
+        if (!$result || $result->num_rows === 0) {
+            
+            return $data = [];
 
-            if ($result->num_rows > 0) {
+        }else {
 
-                $data['data'] = $result->fetch_all(MYSQLI_ASSOC);
+            foreach($result->fetch_all(MYSQLI_ASSOC) as $r){
+
+                $data[] = new ToDo($r['id'], $r['task']);
 
             }
 
         }
-
+        
         return $data;
 
     }
