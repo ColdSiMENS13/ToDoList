@@ -2,13 +2,15 @@
 class DataBase
 {
     private $conn;
-    public function __construct($hostName, $userName, $password, $database)
+    public function __construct($userName, $password)
     {
-        $this->conn = new mysqli($hostName, $userName, $password, $database);
-
-        if ($this->conn->connect_error) {
-            die("Connection failed: " . $this->conn->connect_error);
-        }
+        try {
+            $this->conn = new PDO('mysql:host=mysql;dbname=example', $userName, $password);
+}
+catch (PDOException $e) {
+            print "Error!: ". $e->getMessage(). "</br>";
+            die();
+}
 
     }
     public function exec(string $query){

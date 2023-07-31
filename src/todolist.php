@@ -15,13 +15,13 @@ class ToDoList
 
         $result = $this->dataBase->exec($query);
 
-        if (!$result || $result->num_rows === 0) {
+        if (!$result || $result->rowCount() === 0) {
             
-            return $data = [];
+            return $data;
 
         }else {
 
-            foreach($result->fetch_all(MYSQLI_ASSOC) as $r){
+            foreach($result->fetchAll() as $r){
 
                 $data[] = new ToDo($r['id'], $r['task']);
 
@@ -76,7 +76,7 @@ class ToDoList
     public function editTaskById()
     {
         $data = [];
-
+        var_dump($_SERVER['REQUEST_URI']);
         if (isset($_GET['edit-task']) && !empty($_GET['edit-task'])) {
 
             $id = $_GET['edit-task'];
@@ -86,7 +86,7 @@ class ToDoList
             $query .= "WHERE id=$id";
 
             $result = $this->dataBase->exec($query);
-            $data = $result->fetch_assoc();
+            $data = $result->fetch();
 
         }
         return $data;
