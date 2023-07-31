@@ -14,7 +14,7 @@ RUN apk add --update --no-cache \
 
 COPY --from=mlocati/php-extension-installer:1.5.36 /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN install-php-extensions xdebug pdo pdo_mysql mysqli
+RUN install-php-extensions pdo pdo_mysql mysqli
 
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 

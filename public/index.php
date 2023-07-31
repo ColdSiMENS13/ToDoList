@@ -1,10 +1,9 @@
 <?php
-
 include("../src/database.php");
 include("../src/todo.php");
 include("../src/todolist.php");
 
-$database = new DataBase('localhost', 'root', '', 'todoList');
+$database = new DataBase('mysql', 'example', 'root', 'root');
 $list = new ToDoList($database);
 ?>
 
