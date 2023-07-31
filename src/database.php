@@ -2,10 +2,10 @@
 class DataBase
 {
     private $conn;
-    public function __construct($userName, $password)
+    public function __construct($host, $dbname, $userName, $password)
     {
         try {
-            $this->conn = new PDO('mysql:host=mysql;dbname=example', $userName, $password);
+            $this->conn = new PDO("mysql:host=".$host.";dbname=".$dbname, $userName, $password);
 }
 catch (PDOException $e) {
             print "Error!: ". $e->getMessage(). "</br>";

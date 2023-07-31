@@ -1,11 +1,9 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
 include("../src/database.php");
 include("../src/todo.php");
 include("../src/todolist.php");
 
-$database = new DataBase('root', 'root');
+$database = new DataBase('mysql', 'example', 'root', 'root');
 $list = new ToDoList($database);
 ?>
 

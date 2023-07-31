@@ -19,15 +19,12 @@ class ToDoList
             
             return $data;
 
-        }else {
-
-            foreach($result->fetchAll() as $r){
+        }
+            foreach($result->fetchAll() as $r) {
 
                 $data[] = new ToDo($r['id'], $r['task']);
 
             }
-
-        }
         
         return $data;
 
@@ -76,7 +73,6 @@ class ToDoList
     public function editTaskById()
     {
         $data = [];
-        var_dump($_SERVER['REQUEST_URI']);
         if (isset($_GET['edit-task']) && !empty($_GET['edit-task'])) {
 
             $id = $_GET['edit-task'];
