@@ -1,12 +1,22 @@
 <?php
 
-class ToDoList
+declare(strict_types=1);
+
+namespace App\Controllers;
+
+use App\Database\DB;
+use App\Entities\Todo;
+
+class TodoController
 {
-    private DataBase $dataBase;
-    public function __construct(DataBase $dataBase){
-        $this->dataBase = $dataBase; 
+    private DB $dataBase;
+
+    public function __construct(DB $dataBase)
+    {
+        $this->dataBase = $dataBase;
     }
-    public function getTask()
+
+    public function getTasks()
     {
         $data = [];
 
@@ -16,16 +26,16 @@ class ToDoList
         $result = $this->dataBase->exec($query);
 
         if (!$result || $result->rowCount() === 0) {
-            
+
             return $data;
 
         }
-            foreach($result->fetchAll() as $r) {
+        foreach ($result->fetchAll() as $r) {
 
-                $data[] = new ToDo($r['id'], $r['task']);
+            $data[] = new Todo($r['id'], $r['task']);
 
-            }
-        
+        }
+
         return $data;
 
     }
@@ -70,64 +80,45 @@ class ToDoList
 
     }
 
-    public function editTaskById()
+    public function getTaskById(int $id): ?Todo
     {
-        $data = [];
-        if (isset($_GET['edit-task']) && !empty($_GET['edit-task'])) {
+        $query = "SELECT id, task ";
+        $query .= "FROM todo ";
+        $query .= "WHERE id=$id";
 
-            $id = $_GET['edit-task'];
+        $result = $this->dataBase->exec($query)->fetch();
+        return count($result) ? new Todo($result['id'], $result['task']) : null;
+    }
 
-            $query = "SELECT task ";
-            $query .= "FROM todo ";
+    public function updateTaskById(int $id, string $taskContent): array
+    {
+        $data['taskMsg'] = '';
+        $validation = false;
+
+        if (empty($taskContent)) {
+            $data['taskMsg'] = "Task field is required";
+        }
+
+        if (empty($data['taskMsg'])) {
+
+            $validation = true;
+
+        }
+
+        if ($validation) {
+
+            $query = "UPDATE todo SET ";
+            $query .= "task ='$taskContent' ";
             $query .= "WHERE id=$id";
 
             $result = $this->dataBase->exec($query);
-            $data = $result->fetch();
+
+            if ($result) {
+                echo "<script>window.location='index.php'</script>";
+            }
 
         }
         return $data;
-    }
-
-    public function updateTaskById()
-    {
-        if (isset($_POST['update']) && isset($_GET['edit-task']) && !empty($_GET['edit-task'])) {
-
-            $id = $_GET['edit-task'];
-            $task = $_POST['task'];
-
-            $data['taskMsg'] = '';
-            $validation = false;
-
-            if (empty($task)) {
-
-                $data['taskMsg'] = "Task field is required";
-
-            }
-
-            if (empty($data['taskMsg'])) {
-
-                $validation = true;
-
-            }
-
-            if ($validation) {
-
-                $query = "UPDATE todo SET ";
-                $query .= "task ='$task' ";
-                $query .= "WHERE id=$id";
-
-                $result = $this->dataBase->exec($query);
-
-                if ($result) {
-
-                    echo "<script>window.location='index.php'</script>";
-
-                }
-
-            }
-            return $data;
-        }
-
     }
 
     public function deleteTaskById()
