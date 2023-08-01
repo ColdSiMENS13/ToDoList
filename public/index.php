@@ -21,87 +21,89 @@ $list = new ToDoList($database);
 
 <body>
 
-    <div class="container my-5">
+<div class="container my-5">
 
-        <h2>To Do List</h2>
+    <h2>To Do List</h2>
 
-        <div class="row">
-            <div class="col-sm-6">
+    <div class="row">
+        <div class="col-sm-6">
 
-                <?php
-                $editTask = $list->editTaskById();
-                $createTask = $list->createTask();
+            <?php
+            $editTask = $list->editTaskById();
+            $createTask = $list->createTask();
+            $getList = $list->getTask();
+            $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $result = explode("/", $path);
+            print_r($result[2]);
 
-                if (isset($_GET['edit-task'])) {
+            if ($result[1] === "edit-task") {
 
-                    $createTask = $list->updateTaskById();
+                $createTask = $list->updateTaskById();
 
-                }
+            }
 
-                if (isset($_GET['delete-task'])) {
+            if ($result[1] === "delete-task") {
 
-                    $createTask = $list->deleteTaskById();
+                $createTask = $list->deleteTaskById();
 
-                }
+            }
 
-                ?>
+            ?>
 
-                <form method="post">
-                    <p class="text-danger">
-                        <?php
-                        echo $createTask['success'] ?? '';
-                        echo $createTask['taskMsg'] ?? '';
-                        ?>
-                    </p>
+            <form method="post">
+                <p class="text-danger">
+                    <?php
+                    echo $createTask['success'] ?? '';
+                    echo $createTask['taskMsg'] ?? '';
+                    ?>
+                </p>
 
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Enter Something..." name="task"
-                            value="<?php echo $editTask['task'] ?? ''; ?>">
-                        <button type="submit" class="btn btn-primary"
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Enter Something..." name="task"
+                           value="<?php echo $editTask['task'] ?? ''; ?>">
+                    <button type="submit" class="btn btn-primary"
                             name="<?php echo count($editTask) ? 'update' : 'add'; ?>"><?php echo count($editTask) ? 'update' : 'add'; ?></button>
-                    </div>
+                </div>
 
-                </form>
+            </form>
 
-                <?php
+            <?php
 
-                $getList = $list->getTask();
+            if (count($getList)) {
+                foreach ($getList as $task) {
+                    ?>
 
-                if (count($getList)) {
-                    foreach ($getList as $task) {
-                        ?>
-
-                        <div class="row my-3">
-                            <div class="col-sm-10">
-                                <?php
-                                echo '(' .$task->getId(). ') ' . $task->getTask();
-                                ?>
-                            </div>
-                            <div class="col-sm-1">
-                                <a href="index.php?edit-task=<?php echo $task->getId(); ?>"
-                                    class="text-success text-decoration-none">
-                                    edit
-                                </a>
-                            </div>
-                            <div class="col-sm-1">
-                                <a href="index.php?delete-task=<?php echo $task->getId(); ?>"
-                                    class="text-danger text-decoration-none">
-                                    delete
-                                </a>
-                            </div>
+                    <div class="row my-3">
+                        <div class="col-sm-10">
+                            <?php
+                            echo '(' . $task->getId() . ') ' . $task->getTask();
+                            ?>
                         </div>
-                        <hr>
-                        <?php
-                    }
+                        <div class="col-sm-1">
+                            <a href="/edit-task/<?php echo $task->getId(); ?>"
+                               class="text-success text-decoration-none">
+                                edit
+                            </a>
+                        </div>
+                        <div class="col-sm-1">
+                            <a href="/delete-task/<?php echo $task->getId(); ?>"
+                               class="text-danger text-decoration-none">
+                                delete
+                            </a>
+                        </div>
+                    </div>
+                    <hr>
+                    <?php
                 }
-                ?>
+            }
+            ?>
 
-            </div>
-            <div class="col-sm-6">
-            </div>
         </div>
-
+        <div class="col-sm-6">
+        </div>
     </div>
+
+</div>
 
 </body>
 

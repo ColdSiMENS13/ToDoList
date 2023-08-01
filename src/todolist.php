@@ -3,9 +3,21 @@
 class ToDoList
 {
     private DataBase $dataBase;
-    public function __construct(DataBase $dataBase){
-        $this->dataBase = $dataBase; 
+
+    public function __construct(DataBase $dataBase)
+    {
+        $this->dataBase = $dataBase;
     }
+
+    public function path()
+    {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $result = explode("/", $path);
+
+        return $result;
+
+    }
+
     public function getTask()
     {
         $data = [];
@@ -16,16 +28,16 @@ class ToDoList
         $result = $this->dataBase->exec($query);
 
         if (!$result || $result->rowCount() === 0) {
-            
+
             return $data;
 
         }
-            foreach($result->fetchAll() as $r) {
+        foreach ($result->fetchAll() as $r) {
 
-                $data[] = new ToDo($r['id'], $r['task']);
+            $data[] = new ToDo($r['id'], $r['task']);
 
-            }
-        
+        }
+
         return $data;
 
     }
@@ -73,9 +85,11 @@ class ToDoList
     public function editTaskById()
     {
         $data = [];
-        if (isset($_GET['edit-task']) && !empty($_GET['edit-task'])) {
+        $path_url = $this->path();
 
-            $id = $_GET['edit-task'];
+        if ($path_url[1] === "edit-task") {
+
+            $id = $path_url[2];
 
             $query = "SELECT task ";
             $query .= "FROM todo ";
@@ -90,9 +104,11 @@ class ToDoList
 
     public function updateTaskById()
     {
-        if (isset($_POST['update']) && isset($_GET['edit-task']) && !empty($_GET['edit-task'])) {
+        $path_url = $this->path();
 
-            $id = $_GET['edit-task'];
+        if (isset($_POST['update']) && $path_url[1] === "edit-task") {
+
+            $id = $path_url[2];
             $task = $_POST['task'];
 
             $data['taskMsg'] = '';
@@ -120,7 +136,7 @@ class ToDoList
 
                 if ($result) {
 
-                    echo "<script>window.location='index.php'</script>";
+                    echo "<script>window.location='/'</script>";
 
                 }
 
@@ -132,9 +148,11 @@ class ToDoList
 
     public function deleteTaskById()
     {
-        if (isset($_GET['delete-task']) && !empty($_GET['delete-task'])) {
+        $path_url = $this->path();
 
-            $id = $_GET['delete-task'];
+        if ($path_url[1] === "delete-task") {
+
+            $id = $path_url[2];
             $data['taskMsg'] = '';
             $validation = false;
 
@@ -153,7 +171,7 @@ class ToDoList
 
                 if ($result) {
 
-                    echo "<script>window.location='index.php'</script>";
+                    echo "<script>window.location='/'</script>";
 
                 }
             }
