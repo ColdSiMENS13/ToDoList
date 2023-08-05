@@ -3,11 +3,11 @@ GET http://localhost/
 
 ###
 
-GET http://localhost/task/?id=9
+GET http://localhost/task?id=9
 
 ###
 
-POST http://localhost/task/?id=9
+POST http://localhost/task?id=9
 Content-Type: application/x-www-form-urlencoded
 
 task = hello

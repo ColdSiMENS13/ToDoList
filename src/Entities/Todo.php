@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entities;
-class Todo
+class Todo implements \JsonSerializable
 {
     private $id;
     private $task;
@@ -10,6 +10,11 @@ class Todo
     {
         $this->id = $id;
         $this->task = $task;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [$this->id, $this->task];
     }
 
     public function getId()
