@@ -40,21 +40,16 @@ class TodoController
 
     }
 
-    public function createTask()
+    public function createTask(string $taskContent): array
     {
-        if (isset($_POST['add'])) {
+        $data['taskMsg'] = '';
+        $validation = false;
 
-            $task = $_POST['task'];
-            $data['taskMsg'] = '';
-            $validation = false;
+        if (empty($taskContent)) {
+            $data['taskMsg'] = "Task field is required";
+        }
 
-            if (empty($task)) {
-
-                $data['taskMsg'] = "Empty task field!";
-
-            }
-
-            if (!empty($task) && empty($data['taskMsg'])) {
+            if (!empty($taskContent) && empty($data['taskMsg'])) {
 
                 $validation = true;
 
@@ -64,21 +59,19 @@ class TodoController
 
                 $query = "INSERT INTO todo";
                 $query .= "(task) ";
-                $query .= "VALUES ('$task')";
+                $query .= "VALUES ('$taskContent')";
 
                 $result = $this->dataBase->exec($query);
 
                 if ($result) {
 
-                    $data['success'] = "Task is added successfuly";
+                    $data['success'] = "Task is added successfully";
 
                 }
 
             }
             return $data;
         }
-
-    }
 
     public function getTaskById(int $id): ?Todo
     {
@@ -87,7 +80,7 @@ class TodoController
         $query .= "WHERE id=$id";
 
         $result = $this->dataBase->exec($query)->fetch();
-        return count($result) ? new Todo($result['id'], $result['task']) : null;
+        return $result ? new Todo($result['id'], $result['task']) : null;
     }
 
     public function updateTaskById(int $id, string $taskContent): array
@@ -114,18 +107,16 @@ class TodoController
             $result = $this->dataBase->exec($query);
 
             if ($result) {
-                echo "<script>window.location='index.php'</script>";
+                $data['taskMsg'] = "Task successfully updated";
             }
 
         }
         return $data;
     }
 
-    public function deleteTaskById()
+    public function deleteTaskById(int $id): array
     {
-        if (isset($_GET['delete-task']) && !empty($_GET['delete-task'])) {
 
-            $id = $_GET['delete-task'];
             $data['taskMsg'] = '';
             $validation = false;
 
@@ -144,12 +135,11 @@ class TodoController
 
                 if ($result) {
 
-                    echo "<script>window.location='index.php'</script>";
+                    $data['taskMsg'] = "Task successfully deleted";
 
                 }
             }
             return $data;
-        }
     }
 }
 

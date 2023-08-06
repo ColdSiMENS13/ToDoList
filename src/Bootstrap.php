@@ -17,18 +17,33 @@ class Bootstrap
 
         switch ($this->path()[1]){
             case '':
-                var_dump($controller->getTasks());
+                header("Content-Type: application/json");
+                echo json_encode($controller->getTasks(), JSON_PRETTY_PRINT);
                 break;
             case 'task':
                 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                    var_dump($controller->getTaskById((int)$_GET['id']));
+                    header("Content-Type: application/json");
+                    echo json_encode($controller->getTaskById((int)$_GET['id']));
                 }
 
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $taskContent = $_POST['task'];
-                    var_dump($controller->updateTaskById((int)$_GET['id'], $taskContent));
+                    header("Content-Type: application/json");
+                    echo json_encode($controller->updateTaskById((int)$_GET['id'], $taskContent));
                 }
 
+                if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                    header("Content-Type: application/json");
+                    echo json_encode($controller->deleteTaskById((int)$_GET['id']));
+                }
+                break;
+            case 'add':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST')
+                {
+                    $taskContent = $_POST['task'];
+                    header("Content-Type: application/json");
+                    echo json_encode($controller->createTask($taskContent));
+                }
                 break;
             default:
                 var_dump('The end');
