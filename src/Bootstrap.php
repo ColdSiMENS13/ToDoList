@@ -24,7 +24,6 @@ class Bootstrap
             case 'task':
                 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $response = $controller->getTaskById((int)$_GET['id']);
-                    //var_dump($response);
                     $response->toResponse();
                 }
 
