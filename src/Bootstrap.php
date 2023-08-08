@@ -6,6 +6,7 @@ namespace App;
 
 use App\Controllers\TodoController;
 use App\Database\DB;
+use App\JsonResponse\JsonResponse;
 
 class Bootstrap
 {
@@ -17,37 +18,35 @@ class Bootstrap
 
         switch ($this->path()[1]){
             case '':
-                header("Content-Type: application/json");
-                echo json_encode($controller->getTasks(), JSON_PRETTY_PRINT);
+                $response = $controller->getTasks();
                 break;
             case 'task':
                 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                    header("Content-Type: application/json");
-                    echo json_encode($controller->getTaskById((int)$_GET['id']));
+                    $response = $controller->getTaskById((int)$_GET['id']);
                 }
 
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $taskContent = $_POST['task'];
-                    header("Content-Type: application/json");
-                    echo json_encode($controller->updateTaskById((int)$_GET['id'], $taskContent));
+                    $response = $controller->updateTaskById((int)$_GET['id'], $taskContent);
                 }
 
                 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-                    header("Content-Type: application/json");
-                    echo json_encode($controller->deleteTaskById((int)$_GET['id']));
+                    $response = $controller->deleteTaskById((int)$_GET['id']);
                 }
                 break;
             case 'add':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST')
                 {
                     $taskContent = $_POST['task'];
-                    header("Content-Type: application/json");
-                    echo json_encode($controller->createTask($taskContent));
+                    $response = $controller->createTask($taskContent);
                 }
                 break;
             default:
-                var_dump('The end');
+                http_response_code(404);
+                $response = new JsonResponse("404");
+                break;
         }
+        $response->toResponse();
     }
 
     public function path(): array

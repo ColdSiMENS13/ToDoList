@@ -6,6 +6,8 @@ namespace App\Controllers;
 
 use App\Database\DB;
 use App\Entities\Todo;
+use App\Interfaces\Response;
+use App\JsonResponse\JsonResponse;
 
 class TodoController
 {
@@ -16,7 +18,7 @@ class TodoController
         $this->dataBase = $dataBase;
     }
 
-    public function getTasks()
+    public function getTasks(): Response
     {
         $data = [];
 
@@ -27,7 +29,7 @@ class TodoController
 
         if (!$result || $result->rowCount() === 0) {
 
-            return $data;
+            return new JsonResponse($data);
 
         }
         foreach ($result->fetchAll() as $r) {
@@ -36,11 +38,11 @@ class TodoController
 
         }
 
-        return $data;
+        return new JsonResponse($data);
 
     }
 
-    public function createTask(string $taskContent): array
+    public function createTask(string $taskContent): Response
     {
         $data['taskMsg'] = '';
         $validation = false;
@@ -70,20 +72,26 @@ class TodoController
                 }
 
             }
-            return $data;
+            return new JsonResponse($data);
         }
 
-    public function getTaskById(int $id): ?Todo
+    public function getTaskById(int $id): Response
     {
+        $data = null;
         $query = "SELECT id, task ";
         $query .= "FROM todo ";
         $query .= "WHERE id=$id";
 
         $result = $this->dataBase->exec($query)->fetch();
-        return $result ? new Todo($result['id'], $result['task']) : null;
+        if ($result){
+            $result = new Todo($result['id'], $result['task']);
+            return new JsonResponse($result);
+        } else {
+            return new JsonResponse($data);
+        }
     }
 
-    public function updateTaskById(int $id, string $taskContent): array
+    public function updateTaskById(int $id, string $taskContent): Response
     {
         $data['taskMsg'] = '';
         $validation = false;
@@ -111,10 +119,10 @@ class TodoController
             }
 
         }
-        return $data;
+        return new JsonResponse($data);
     }
 
-    public function deleteTaskById(int $id): array
+    public function deleteTaskById(int $id): Response
     {
 
             $data['taskMsg'] = '';
@@ -139,7 +147,7 @@ class TodoController
 
                 }
             }
-            return $data;
+            return new JsonResponse($data);
     }
 }
 
