@@ -19,23 +19,19 @@ class Bootstrap
         switch ($this->path()[1]){
             case '':
                 $response = $controller->getTasks();
-                $response->toResponse();
                 break;
             case 'task':
                 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $response = $controller->getTaskById((int)$_GET['id']);
-                    $response->toResponse();
                 }
 
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $taskContent = $_POST['task'];
                     $response = $controller->updateTaskById((int)$_GET['id'], $taskContent);
-                    $response->toResponse();
                 }
 
                 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
                     $response = $controller->deleteTaskById((int)$_GET['id']);
-                    $response->toResponse();
                 }
                 break;
             case 'add':
@@ -43,12 +39,14 @@ class Bootstrap
                 {
                     $taskContent = $_POST['task'];
                     $response = $controller->createTask($taskContent);
-                    $response->toResponse();
                 }
                 break;
             default:
-                var_dump('The end');
+                http_response_code(404);
+                $response = new JsonResponse("404");
+                break;
         }
+        $response->toResponse();
     }
 
     public function path(): array
